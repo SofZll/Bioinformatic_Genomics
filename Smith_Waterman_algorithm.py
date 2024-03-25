@@ -1,25 +1,12 @@
-#Needleman & Wunsch algoritm
+#Smith and Waterman algorithm
 
 import sys
 
-# Function to fill the matrix with the gap penalties
-# arguments: Matrix
+# Matrix initialization function
+# arguments: sequence1, sequence2
 # return: Matrix
-def gap_penalties_filler(Matrix):
-    counter_r = 1
-    counter_c = 1
-    Matrix[0][0] = (0, 'n')
-
-    while counter_r < len(Matrix) or counter_c < len(Matrix[0]):
-        if counter_r < len(Matrix):
-            Matrix[counter_r][0] = (-2 * counter_r, 'n')
-            counter_r += 1
-        if counter_c < len(Matrix[0]):
-            Matrix[0][counter_c] = (-2 * counter_c, 'n')
-            counter_c += 1
-
-    #print(Matrix)
-
+def matrix_init(sequence1, sequence2):
+    Matrix = [[(0, 'n')] * (len(sequence2) + 1) for i in range(len(sequence1) + 1)]
     return Matrix
 
 # Function to fill the matrix with the scores
@@ -37,28 +24,45 @@ def score_filler(Matrix, sequence1, sequence2):
             up = Matrix[i - 1][j][0] - 2
             left = Matrix[i][j - 1][0] - 2
 
-            max_score = max(diagonal, up, left)
+            max_score = max(diagonal, up, left, 0)
 
             if max_score == diagonal:
-               Matrix[i][j] = (max_score, 'd')
+                Matrix[i][j] = (max_score, 'd')
             elif max_score == up:
                 Matrix[i][j] = (max_score, 'u')
-            else:
+            elif max_score == left:
                 Matrix[i][j] = (max_score, 'l')
-    #print(Matrix)
+            else:
+                continue
 
     return Matrix
 
+#Funbction find max score
+def find_max_score(Matrix, sequence1, sequence2):
+    max_score = 0
+    max_i = 0
+    max_j = 0
+
+    for x in range(len(sequence1) + 1):
+        for y in range(len(sequence2) + 1):
+            if Matrix[x][y][0] > max_score:
+                max_score = Matrix[x][y][0]
+                max_i = x
+                max_j = y
+
+    return (max_i, max_j)
+
 # Function to trace back the path
 # arguments: Matrix, sequence1, sequence2
-# return: Global_alignment
+# return: Local_alignment
 def trace_back(Matrix, sequence1, sequence2):
-    i = len(sequence1)
-    j = len(sequence2)
     alignment1 = ''
     alignment2 = ''
+    (i, j) = find_max_score(Matrix, sequence1, sequence2)
 
-    while i > 0 or j > 0:
+
+    while i > 0 and j > 0 and Matrix[i][j][0] != 0:
+
         if Matrix[i][j][1] == 'd':
             alignment1 = sequence1[i - 1] + alignment1
             alignment2 = sequence2[j - 1] + alignment2
@@ -72,27 +76,28 @@ def trace_back(Matrix, sequence1, sequence2):
             alignment1 = '-' + alignment1
             alignment2 = sequence2[j - 1] + alignment2
             j -= 1
-    
+
+        if Matrix[i][j][1] == 'n' and Matrix[i-1][j][1] == 'n' and Matrix[i][j-1][1] == 'n':
+            break
+
     return (alignment1, alignment2)
 
-#Needleman & Wunsch algorithm function
+#Smith and Waterman algorithm functiion
 # arguments: sequence1, sequence2
-# return: Global_alignment
-def Needleman_Wunsch_algorithm(sequence1, sequence2):
-    Matrix = [[(0, 'n')] * (len(sequence2) + 1) for i in range(len(sequence1) + 1)]
-    #print(Matrix)
-    Matrix = gap_penalties_filler(Matrix)
+# return: Local_alignment
+def smith_waterman(sequence1, sequence2):
+    Matrix = matrix_init(sequence1, sequence2)
     Matrix = score_filler(Matrix, sequence1, sequence2)
-    Global_alignment = trace_back(Matrix, sequence1, sequence2)
-
-    return Global_alignment
-
-
+    alignment = trace_back(Matrix, sequence1, sequence2)
+    return alignment
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print('Usage: python3 Needleman_Wunsch_algorithm.py sequence1 sequence2')
+        print('Usage: python3 Smith_Waterman_algorithm.py sequence1 sequence2')
         sys.exit(1)
     
-    Global_alignment = Needleman_Wunsch_algorithm(sys.argv[1], sys.argv[2])
-    print(f'Global alignment: {Global_alignment[0]}\t{Global_alignment[1]}')
+    Global_alignment = smith_waterman(sys.argv[1], sys.argv[2])
+    print(f'Local alignment: {Global_alignment[0]}\t{Global_alignment[1]}')
+
+
+
