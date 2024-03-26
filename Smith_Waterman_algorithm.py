@@ -1,4 +1,4 @@
-#Smith and Waterman algorithm
+# Smith and Waterman algorithm
 
 import sys
 
@@ -37,7 +37,9 @@ def score_filler(Matrix, sequence1, sequence2):
 
     return Matrix
 
-#Funbction find max score
+# Funbction find max score
+# arguments: Matrix, sequence1, sequence2
+# return: (max_i, max_j)
 def find_max_score(Matrix, sequence1, sequence2):
     max_score = 0
     max_i = 0
@@ -82,7 +84,7 @@ def trace_back(Matrix, sequence1, sequence2):
 
     return (alignment1, alignment2)
 
-#Smith and Waterman algorithm functiion
+# Smith and Waterman algorithm functiion
 # arguments: sequence1, sequence2
 # return: Local_alignment
 def smith_waterman(sequence1, sequence2):

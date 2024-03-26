@@ -1,4 +1,4 @@
-#Needleman & Wunsch algoritm
+# Needleman & Wunsch algoritm
 
 import sys
 
@@ -75,7 +75,7 @@ def trace_back(Matrix, sequence1, sequence2):
     
     return (alignment1, alignment2)
 
-#Needleman & Wunsch algorithm function
+# Needleman & Wunsch algorithm function
 # arguments: sequence1, sequence2
 # return: Global_alignment
 def Needleman_Wunsch_algorithm(sequence1, sequence2):
