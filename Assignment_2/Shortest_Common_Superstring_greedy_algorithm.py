@@ -72,11 +72,19 @@ def reduce_strings(strings, from_string, to_string, merged_string):
 #return: reduced_overlap_matrix
 def reduce_overlap_matrix(overlap_matrix, strings, from_string, to_string, merged_string):
     reduced_overlap_matrix = overlap_matrix
-    reduced_overlap_matrix.pop(from_string)
-    reduced_overlap_matrix.pop(to_string)
+    if from_string < to_string:
+        reduced_overlap_matrix.pop(to_string)
+        reduced_overlap_matrix.pop(from_string)
+    else:
+        reduced_overlap_matrix.pop(from_string)
+        reduced_overlap_matrix.pop(to_string)
     for i in range(len(reduced_overlap_matrix)):
-        reduced_overlap_matrix[i].pop(from_string)
-        reduced_overlap_matrix[i].pop(to_string)
+        if from_string < to_string:
+            reduced_overlap_matrix[i].pop(to_string)
+            reduced_overlap_matrix[i].pop(from_string)
+        else:
+            reduced_overlap_matrix[i].pop(from_string)
+            reduced_overlap_matrix[i].pop(to_string)
     for i in range(len(reduced_overlap_matrix)):
         reduced_overlap_matrix[i].append(overlap(merged_string, strings[i], 3))
     reduced_overlap_matrix.append([])
